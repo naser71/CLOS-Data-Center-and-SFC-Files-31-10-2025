@@ -1,0 +1,19 @@
+master@worker1:~$ sudo ovs-vsctl show
+[sudo] password for master:
+cd01fa86-111d-4dcf-bf7f-f05af3b43011
+    Bridge "br1"
+        Port "veth0e3a9f61"
+            Interface "veth0e3a9f61"
+        Port "vxlan_net_node1"
+            Interface "vxlan_net_node1"
+                type: vxlan
+                options: {remote_ip="192.168.11.1"}
+        Port "veth7798c550"
+            Interface "veth7798c550"
+        Port "br1"
+            Interface "br1"
+                type: internal
+        Port "vethf2be0b08"
+            Interface "vethf2be0b08"
+    ovs_version: "2.9.8"
+master@worker1:~$
