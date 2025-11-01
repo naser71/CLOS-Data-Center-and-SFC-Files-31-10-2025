@@ -1,0 +1,19 @@
+master@new-master1:~$ kubectl get network-attachment-definition ovs-conf -o yaml
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: ovs-cni.network.kubevirt.io/br1
+  creationTimestamp: "2024-05-12T00:02:38Z"
+  generation: 1
+  name: ovs-conf
+  namespace: default
+  resourceVersion: "47359"
+  uid: 39f8972c-8a5f-4799-bca1-0278fb44b9d0
+spec:
+  config: |-
+    {
+    "cniVersion": "0.3.1",
+    "type": "ovs",
+    "bridge": "br1"
+    }
