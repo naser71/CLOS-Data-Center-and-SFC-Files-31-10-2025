@@ -1,0 +1,4 @@
+master@worker2:~$ sudo ovs-ofctl dump-flows br1
+[sudo] password for master:
+ cookie=0x0, duration=932486.437s, table=0, n_packets=759, n_bytes=56566, priority=100,in_port="vxlan_net_node2" actions=output:veth23f4fbff
+ cookie=0x0, duration=932477.419s, table=0, n_packets=776, n_bytes=71604, priority=100,in_port=veth23f4fbff actions=output:"vxlan_net_node2"
