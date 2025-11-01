@@ -1,0 +1,8 @@
+master@worker2:~$ sudo ovs-ofctl dump-flows br2
+ cookie=0x0, duration=931774.924s, table=0, n_packets=100, n_bytes=4200, arp,arp_tpa=100.100.100.20 actions=output:vethc96746dd
+ cookie=0x0, duration=931768.026s, table=0, n_packets=100, n_bytes=4200, arp,arp_tpa=100.100.100.30 actions=output:vethb68aa59f
+ cookie=0x0, duration=931761.658s, table=0, n_packets=69, n_bytes=2898, arp,arp_tpa=100.100.200.40 actions=output:vethe33c6802
+ cookie=0x0, duration=931753.898s, table=0, n_packets=693, n_bytes=53884, priority=100,in_port=vethc96746dd actions=output:vethb68aa59f
+ cookie=0x0, duration=931746.103s, table=0, n_packets=672, n_bytes=65310, priority=100,in_port=vethb68aa59f actions=output:vethc96746dd
+ cookie=0x0, duration=931739.409s, table=0, n_packets=776, n_bytes=56310, priority=100,in_port=vethe33c6802 actions=output:"vxlan_net_node2"
+ cookie=0x0, duration=931733.146s, table=0, n_packets=626, n_bytes=61086, priority=100,in_port="vxlan_net_node2" actions=output:vethe33c6802
