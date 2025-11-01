@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ids-snort
+  annotations:
+    k8s.v1.cni.cncf.io/networks: '[{ "name": "ovs-br2" }, { "name": "ovs-br2" }]'
+spec:
+  nodeName: worker2  # Specify the node name here
+  containers:
+  - name: ids-snort
+    image: patrickneise/snort
+    # Adjust the command and arguments based on your snort configuration and location of snort.conf
+    command: ["/usr/local/bin/snort", "-A", "console", "-c", "/etc/snort/snort.conf", "-i", "net1"]
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+          - NET_ADMIN
+    resources:
+      limits:
+        ovs-cni.network.kubevirt.io/br2: 2

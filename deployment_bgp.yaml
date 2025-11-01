@@ -1,0 +1,63 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: firstbgp-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 172.16.1.240-172.16.1.250
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: sfcbgp
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - firstbgp-pool
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: peerbgp
+  namespace: metallb-system
+spec:
+  myASN: 64510
+  peerASN: 64510
+  peerAddress: 192.168.10.2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginxbgp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginxbgp
+  template:
+    metadata:
+      labels:
+        app: nginxbgp
+    spec:
+      containers:
+      - name: nginxbgp
+        image: nginx:1
+        ports:
+        - name: http
+          containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxbgp
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginxbgp
+  type: LoadBalancer
+

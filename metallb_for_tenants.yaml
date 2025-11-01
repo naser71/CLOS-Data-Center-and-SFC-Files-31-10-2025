@@ -1,0 +1,110 @@
+# IPAddressPools for Tenant1 and Tenant2
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: tenant1-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 172.16.1.241/32  # Single IP for Tenant1
+
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: tenant2-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 10.0.0.1/32  # Single IP for Tenant2
+
+---
+# BGPPeers for TOR1 and TOR2 (with node selectors)
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: tor1-peer
+  namespace: metallb-system
+spec:
+  myASN: 64510
+  peerASN: 64510
+  peerAddress: 192.168.10.2  # TOR1 IP
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: worker1  # Targets worker1 only
+
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: tor2-peer
+  namespace: metallb-system
+spec:
+  myASN: 64520
+  peerASN: 64520
+  peerAddress: 192.168.11.2  # TOR2 IP
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: worker2  # Targets worker2 only
+
+---
+# BGPAdvertisements for Tenant1 and Tenant2
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: tenant1-bgp-adv
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - tenant1-pool
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: worker1  # Ensure this IP is advertised only from worker1
+
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: tenant2-bgp-adv
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - tenant2-pool
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: worker2  # Ensure this IP is advertised only from worker2
+
+---
+# Services for Tenant1 and Tenant2
+apiVersion: v1
+kind: Service
+metadata:
+  name: sfc-metal-service
+  annotations:
+    metallb.universe.tf/address-pool: tenant1-pool  # Explicit pool assignment
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: sfc-metal-service  # Matches tenant1's firewall pod
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sfc-metal-service-two
+  annotations:
+    metallb.universe.tf/address-pool: tenant2-pool  # Explicit pool assignment
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: sfc-metal-service-two  # Matches tenant2's firewall pod
+  type: LoadBalancer

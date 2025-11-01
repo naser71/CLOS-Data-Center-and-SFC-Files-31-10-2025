@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-application
+  labels:
+    app: sfc-metal-service   # Add the label here
+  annotations:
+    k8s.v1.cni.cncf.io/networks: ovs-conf
+spec:
+  nodeName: worker2  # Specify the node name here
+  containers:
+  - name: web-application
+    image: nginx:1
+    ports:
+    - name: http
+      containerPort: 80
+    command: ["/bin/sh", "-c", "while true; do sleep 1000; done"]
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+          - NET_ADMIN
+    resources:
+      limits:
+        ovs-cni.network.kubevirt.io/br1: 1
+
+
