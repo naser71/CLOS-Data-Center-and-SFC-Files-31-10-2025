@@ -16,7 +16,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 10.0.0.1/32  # Single IP for Tenant2
+  - 172.25.1.241/32  # Single IP for Tenant2
 
 ---
 # BGPPeers for TOR1 and TOR2 (with node selectors)
